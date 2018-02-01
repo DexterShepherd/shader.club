@@ -4,13 +4,13 @@
       <transition name='frame'>
         <div class='shader-overlay' v-show='!ready'></div>
       </transition>
-      <iframe :height="frameHeight" frameborder="0" :src="embedSrc" ref="if" ></iframe>
-        <transition name='info'>
-          <div class='shader-info' v-if="showShaderInfo">
-            <h1> <i> {{ shader.name.toUpperCase() }} </i> </h1>  
-            <h2> {{ shader.author }} </h2>  
-            <p> {{ shader.desc }} </p>
-          </div>
+      <iframe :height="frameHeight" frameborder="0" :class="frameLowZ ? 'low-z' : ''" :src="embedSrc" ref="if" ></iframe>
+      <transition name='info'>
+        <div class='shader-info' v-if="showShaderInfo">
+          <h1> <i> {{ shader.name.toUpperCase() }} </i> </h1>  
+          <h2> {{ shader.author }} </h2>  
+          <p> {{ shader.desc }} </p>
+        </div>
       </transition>
     </div>
   </div>
@@ -36,7 +36,8 @@ export default {
         data: null
       },
       showShaderInfoFor: 4000,
-      shaderLoadDelay: 400
+      shaderLoadDelay: 400,
+      frameLowZ: true
     }
   },
   mounted() {
@@ -61,6 +62,8 @@ export default {
                 this.showShaderInfo = true
                 setTimeout( () => {
                   this.showShaderInfo = false
+                  // hook into animation event handlers here instead of nested timeouts
+                  setTimeout( () => this.frameLowZ = false, 1000 ) 
                 }, this.showShaderInfoFor )
               }, this.shaderLoadDelay )
             })
@@ -73,12 +76,13 @@ export default {
     },
     embedSrc() {
       return `https://www.shadertoy.com/embed/${this.shader.id}?gui=false$t=10&paused=false&muted=false`
-    }
+    },
   }
 }
 </script>
 
 <style>
+
 body {
   height: 100vh;
   overflow: hidden;
@@ -97,6 +101,9 @@ iframe {
   left: 0;
   width: 100vw;
   margin-top: -30px;
+}
+
+.low-z {
   z-index: -1;
 }
 
