@@ -12,3 +12,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+aws-credentials.json
