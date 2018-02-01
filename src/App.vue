@@ -34,7 +34,8 @@ export default {
         desc: null,
         data: null
       },
-      showShaderInfoFor: 4000
+      showShaderInfoFor: 4000,
+      shaderLoadDelay: 400
     }
   },
   mounted() {
@@ -59,7 +60,7 @@ export default {
                 setTimeout( () => {
                   this.showShaderInfo = false
                 }, this.showShaderInfoFor )
-              }, 200 )
+              }, this.shaderLoadDelay )
             })
         })
     }
