@@ -1,17 +1,18 @@
 <template>
   <div id="app">
-    <transition name='frame'>
-      <div class="shader-container" v-show="ready">
-        <iframe :height="frameHeight" frameborder="0" :src="embedSrc" allowfullscreen ref="if" ></iframe>
-          <transition name='info'>
-            <div class='shader-info' v-if="showShaderInfo">
-              <h1> <i> {{ shader.name.toUpperCase() }} </i> </h1>  
-              <h2> {{ shader.author }} </h2>  
-              <p> {{ shader.desc }} </p>
-            </div>
-        </transition>
-      </div>
-    </transition>
+    <div class="shader-container">
+      <transition name='frame'>
+        <div class='shader-overlay' v-show='!ready'></div>
+      </transition>
+      <iframe :height="frameHeight" frameborder="0" :src="embedSrc" ref="if" ></iframe>
+        <transition name='info'>
+          <div class='shader-info' v-if="showShaderInfo">
+            <h1> <i> {{ shader.name.toUpperCase() }} </i> </h1>  
+            <h2> {{ shader.author }} </h2>  
+            <p> {{ shader.desc }} </p>
+          </div>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -47,6 +48,7 @@ export default {
         .then( ({ data }) => {
           this.shaders = data.Results
           this.shader.id = this.shaders[Math.floor(Math.random() * this.shaders.length)]
+
           Axios.get(`${this.baseUrl}/shaders/${this.shader.id}?key=${this.key}`)
             .then( ({data}) => {
               let info = data.Shader.info
@@ -96,6 +98,16 @@ iframe {
   width: 100vw;
   margin-top: -30px;
   z-index: -1;
+}
+
+.shader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fdfdfd;
+  z-index: 1;
 }
 
 h1 {
